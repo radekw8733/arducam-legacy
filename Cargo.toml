@@ -1,0 +1,17 @@
+[package]
+authors = ["Radosław Wolański <radekw8733@gmail.com"]
+license = "Apache-2.0"
+name = "arducam-legacy"
+description = "Driver for Arducam legacy cameras based on embedded-hal"
+categories = ["hardware-support", "embedded", "computer-vision", "no-std::no-alloc", "multimedia::images"]
+keywords = ["embedded", "embedded-hal", "arducam", "ov2640"]
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/radekw8733/arducam-legacy"
+readme = "README.md"
+
+[dependencies]
+embedded-hal = "0.2.7"
+
+[build-dependencies]
+cc = "1.0.79"
