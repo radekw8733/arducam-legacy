@@ -226,6 +226,7 @@ where
                 break;
             }
         }
+        self.flush_fifo()?;
         Ok(final_length)
     }
 
