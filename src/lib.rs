@@ -55,7 +55,7 @@
 #![no_std]
 #![no_main]
 
-use core::fmt;
+use core::{fmt, slice::IterMut};
 
 use embedded_hal::{blocking::{spi::{self, Transfer}, i2c, delay::DelayMs}, digital::v2::OutputPin};
 use ov2640_registers::*;
@@ -205,19 +205,16 @@ where
     /// 
     /// # Returns
     /// Actual image size
-    pub fn read_captured_image(&mut self, data_out: &mut [u8]) -> Result<usize, Error<SpiErr, I2cErr, PinErr>> {
+    pub fn read_captured_image(&mut self, data_out: IterMut<u8>) -> Result<usize, Error<SpiErr, I2cErr, PinErr>>
+    {
         let length = self.get_fifo_length()?;
         let mut final_length = 0;
-        // Check if borrowed array is too small for image
-        if length > data_out.len() as u32 {
-            return Err(Error::OutOfBounds);
-        }
         self.spi_cs.set_low().map_err(Error::Pin)?;
         self.set_fifo_burst()?;
         let mut curr_byte = 0;
         #[allow(unused_assignments)]
         let mut prev_byte = 0;
-        for (i, b) in data_out.iter_mut().enumerate() {
+        for (i, b) in data_out.enumerate() {
             prev_byte = curr_byte;
             curr_byte = self.spi.transfer(&mut [0x00]).map_err(Error::Spi)?[0];
             *b = curr_byte;
